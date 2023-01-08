@@ -1,6 +1,6 @@
 # xv6 labs
 
-- [ ] Utilities
+- [x] Utilities
 - [ ] System Calls
 - [ ] Page Tables
 - [ ] Traps
