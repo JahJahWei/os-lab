@@ -1,7 +1,7 @@
 # xv6 labs
 
-- [x] Utilities
-- [ ] System Calls
+- [x] [Utilities](https://github.com/JahJahWei/os-lab/tree/util)
+- [x] [System Calls](https://github.com/JahJahWei/os-lab/tree/syscall)
 - [ ] Page Tables
 - [ ] Traps
 - [ ] Lazy Allocation
