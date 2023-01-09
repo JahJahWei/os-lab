@@ -695,3 +695,17 @@ procdump(void)
     printf("\n");
   }
 }
+
+int
+collect_proc_num()
+{
+    int i;
+    int n = 0;
+
+    for (i = 0; i < NCPU; i++) {
+        if (proc[i].state != UNUSED)
+            n++;
+    }
+
+    return n;
+}
