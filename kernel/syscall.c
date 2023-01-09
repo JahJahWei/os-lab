@@ -169,7 +169,7 @@ syscall(void)
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
     //pid: syscall syscall_name -> output
-    if (p->trace_num == 1 << num) {
+    if (p->trace_num & (1 << num)) {
         printf("%d: syscall %s -> %d\n", p->pid, syscall_name_arr[num], p->trapframe->a0);
     }
   } else {
