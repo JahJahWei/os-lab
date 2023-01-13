@@ -194,6 +194,14 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
   }
 }
 
+void
+uvmmap(pagetable_t pagetable, uint64 va, uint64 pa, uint64 sz, int perm)
+{
+    if (mappages(pagetable, va, sz, pa, perm) != 0) {
+        panic("kvmmap");
+    }
+}
+
 // create an empty user page table.
 // returns 0 if out of memory.
 pagetable_t

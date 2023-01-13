@@ -115,7 +115,12 @@ found:
 
   // An empty user page table.
   p->pagetable = proc_pagetable(p);
-  if(p->pagetable == 0){
+
+  p->kernel_pagetable = proc_kernel_pagetable(p);
+
+  proc_kernel_stack(p);
+
+  if(p->pagetable == 0 || p->kernel_pagetable == 0){
     freeproc(p);
     release(&p->lock);
     return 0;
@@ -142,6 +147,7 @@ freeproc(struct proc *p)
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
+  p->kernel_pagetable = 0;
   p->sz = 0;
   p->pid = 0;
   p->parent = 0;
@@ -183,6 +189,55 @@ proc_pagetable(struct proc *p)
   }
 
   return pagetable;
+}
+
+pagetable_t
+proc_kernel_pagetable(struct proc *p)
+{
+//    initlock(&p->lock, "proc");
+//
+//    char *pa = kalloc();
+//    if(pa == 0)
+//        panic("kalloc");
+//
+//    uint64 va = KSTACK((int) (p - proc));
+//    kvmmap(va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
+//    p->kstack = va;
+    pagetable_t kernel_pagetable;
+
+    kernel_pagetable = uvmcreate();
+    if (kernel_pagetable == 0)
+        panic("uvmcreate");
+
+    uvmmap(kernel_pagetable, UART0, UART0, PGSIZE, PTE_R | PTE_W);
+
+    uvmmap(kernel_pagetable, VIRTIO0, VIRTIO0, PGSIZE, PTE_R | PTE_W);
+
+    uvmmap(kernel_pagetable, CLINT, CLINT, 0x10000, PTE_R | PTE_W);
+
+    uvmmap(kernel_pagetable, PLIC, PLIC, 0x400000, PTE_R | PTE_W);
+
+    uvmmap(kernel_pagetable, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
+
+    uvmmap(kernel_pagetable, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);
+
+    uvmmap(kernel_pagetable, TRAMPOLINE, (uint64)trampoline, PGSIZE, PTE_R | PTE_X);
+
+    return kernel_pagetable;
+}
+
+void
+proc_kernel_stack(struct proc *p)
+{
+    char *kernel_stack;
+
+    kernel_stack = kalloc();
+    if (kernel_stack == 0)
+        panic("kalloc");
+
+    uint64 va = KSTACK((int) (p - proc));
+    uvmmap(p->kernel_pagetable, va, (uint64)kernel_stack, PGSIZE, PTE_R | PTE_W);
+    p->kstack = va;
 }
 
 // Free a process's page table, and free the
@@ -473,6 +528,10 @@ scheduler(void)
         // before jumping back to us.
         p->state = RUNNING;
         c->proc = p;
+
+        w_satp(MAKE_SATP(p->kernel_pagetable));
+        sfence_vma();
+
         swtch(&c->context, &p->context);
 
         // Process is done running for now.
