@@ -328,6 +328,13 @@ fork(void)
     release(&np->lock);
     return -1;
   }
+
+  if (uvmcopy(p->kernel_pagetable, np->kernel_pagetable, p->sz) < 0) {
+      freeproc(np);
+      release(&np->lock);
+      return -1;
+  }
+
   np->sz = p->sz;
 
   np->parent = p;
