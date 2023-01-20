@@ -141,8 +141,8 @@ backtrace(void)
     while (1) {
         if (fp == top) break;
 
-        printf("%p\n", (uint64*)(fp - 8));
+        printf("%p\n", *(uint64*)(fp - 8));
 
-        fp = (uint64*)(fp - 16);
+        fp = *(uint64*)(fp - 16);
     }
 }
