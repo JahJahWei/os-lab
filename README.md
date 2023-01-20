@@ -3,7 +3,7 @@
 - [x] [Utilities](https://github.com/JahJahWei/os-lab/tree/util)
 - [x] [System Calls](https://github.com/JahJahWei/os-lab/tree/syscall)
 - [x] [Page Tables](https://github.com/JahJahWei/os-lab/tree/pgtbl)
-- [ ] Traps
+- [x] [Traps](https://github.com/JahJahWei/os-lab/tree/traps)
 - [ ] Lazy Allocation
 - [ ] Copy On Write
 - [ ] Multithreading
