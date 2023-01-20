@@ -498,6 +498,7 @@ sys_sigalarm(void)
     p = myproc();
     p->ticks = ticks;
     p->alarm_handler = handler;
+    p->alarm_backup_trapframe = p->trapframe;
 
     return 0;
 }
@@ -505,5 +506,11 @@ sys_sigalarm(void)
 uint64
 sys_sigreturn(void)
 {
+    struct proc *p;
+
+    p = myproc();
+
+    p->trapframe = p->alarm_backup_trapframe;
+
     return 0;
 }
