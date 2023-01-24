@@ -6,7 +6,7 @@
 - [x] [Traps](https://github.com/JahJahWei/os-lab/tree/traps)
 - [x] [Lazy Allocation](https://github.com/JahJahWei/os-lab/tree/lazy)
 - [x] [Copy On Write](https://github.com/JahJahWei/os-lab/tree/cow)
-- [ ] Multithreading
+- [x] [Multithreading](https://github.com/JahJahWei/os-lab/tree/thread)
 - [ ] Lock
 - [ ] File System
 - [ ] Mmap
